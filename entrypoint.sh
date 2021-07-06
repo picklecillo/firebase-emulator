@@ -29,6 +29,10 @@ case "$1" in
         bash
     ;;
 
+    run_demo)
+        firebase emulators:start --project demo-${FIREBASE_PROJECT}
+    ;;
+
     run_basic )
         if [ ! -f "./fb/firebase.json" ]; then
             if [ -f "override.json" ]; then
@@ -44,6 +48,17 @@ case "$1" in
         firebase emulators:start --only firestore,database,pubsub
     ;;
 
+    export_data )
+        cd fb
+        firebase emulators:export --token $FIREBASE_TOKEN --project ${FIREBASE_PROJECT} --force ./emulator/data
+    ;;
+
+    run_all_with_data )
+        check_credentials
+        cd fb
+        firebase emulators:start --token $FIREBASE_TOKEN --project ${FIREBASE_PROJECT} --import /app/fb/emulator/data --export-on-exit /app/fb/emulator/data
+    ;;
+
     run_all )
         check_credentials
         cd fb
@@ -56,6 +71,11 @@ case "$1" in
         cd fb
         firebase init functions --token $FIREBASE_TOKEN --project ${FIREBASE_PROJECT}
         firebase init hosting --token $FIREBASE_TOKEN --project ${FIREBASE_PROJECT}
+    ;;
+
+    install_functions )
+        cd fb/functions/
+        npm install
     ;;
 
     help)
